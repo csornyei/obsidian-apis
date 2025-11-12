@@ -1,0 +1,13 @@
+services:
+  fable-scraper:
+    build:
+      context: ./fable-scraper
+      dockerfile: Dockerfile
+    container_name: fable_scraper
+    environment:
+      - FILE_API_BASE_URL=http://file_api:8000
+
+networks:
+  obsidian_network:
+    name: obsidian_network
+    external: true
