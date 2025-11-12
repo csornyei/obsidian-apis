@@ -3,7 +3,7 @@ name: Build Fable Scraper
 on:
   push:
     tags:
-      - 'fable_scraper:v*'
+      - 'fable_scraper-v*'
 
 env: 
   IMAGE: ghcr.io/${{ github.repository_owner }}/fable-scraper
@@ -36,7 +36,7 @@ jobs:
       - name: Get version from tags
         id: get_version
         run: |
-          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/fable_scraper:v//')
+          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/fable_scraper-/')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Build and push Docker image
