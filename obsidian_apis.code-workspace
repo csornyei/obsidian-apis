@@ -1,11 +1,14 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "fable-scraper"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "fable-scraper"
+    },
+    {
+      "path": "wol-api"
+    }
+  ],
+  "settings": {}
 }
