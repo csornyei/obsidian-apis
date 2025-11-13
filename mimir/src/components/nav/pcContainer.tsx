@@ -7,12 +7,12 @@ import { HealthResponse } from "@/utils/types";
 import HealthStatus from "./healthStatus";
 
 interface PCContainerProps {
-  initialHealth?: HealthResponse;
+  initialHealth: HealthResponse | null;
 }
 
 const PCContainer: FC<PCContainerProps> = ({ initialHealth }) => {
   const [pcHealth, setPcHealth] = useState<HealthResponse | null>(
-    initialHealth || null
+    initialHealth
   );
   const [showStatus, setShowStatus] = useState<boolean>(false);
 

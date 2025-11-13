@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { HealthResponse, PowerAction } from "./types";
 
-const url = process.env.WOL_API || "http://localhost:5005/api/pc";
+const url = process.env.WOL_API || "http://localhost:8000";
 const secretKey = process.env.WOL_API_KEY;
 
 const wolApi = axios.create({
@@ -11,9 +11,24 @@ const wolApi = axios.create({
   },
 });
 
-export const getHealth: () => Promise<HealthResponse> = async () => {
-  const response = await wolApi.get("/health");
-  return response.data;
+export const getHealth: () => Promise<HealthResponse | null> = async () => {
+  try {
+    const response = await wolApi.get("/health");
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error("Axios error details:", {
+        message: error.message,
+        code: error.code,
+        responseData: error.response?.data,
+        responseStatus: error.response?.status,
+        responseHeaders: error.response?.headers,
+      });
+    } else {
+      console.error("Unexpected error:", error);
+    }
+    return null;
+  }
 };
 
 export const postPowerAction = async (action: PowerAction) => {
