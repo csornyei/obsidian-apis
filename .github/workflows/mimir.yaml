@@ -1,5 +1,5 @@
 
-name: Build Fable Scraper
+name: Build Mimir
 
 on:
   push:
