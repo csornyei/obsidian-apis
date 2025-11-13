@@ -8,6 +8,15 @@
     },
     {
       "path": "wol-api"
+    },
+    {
+      "path": "mimir"
+    },
+    {
+      "path": "pc-controller"
+    },
+    {
+      "path": "/opt/pccontroller"
     }
   ],
   "settings": {}

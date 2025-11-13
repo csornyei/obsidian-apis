@@ -6,8 +6,26 @@ services:
     container_name: fable_scraper
     environment:
       - FILE_API_BASE_URL=http://file_api:8000
+    depends_on:
+      - file_api
 
-networks:
-  obsidian_network:
-    name: obsidian_network
-    external: true
+  file_api:
+    image: ghcr.io/csornyei/obsidian-file-api:latest
+    container_name: file_api
+    ports:
+      - "8000:8000"
+    environment:
+      - BASE_DIR=/data
+    volumes:
+      - ./data:/data
+
+  wol-api:
+    build:
+      context: ./wol-api
+      dockerfile: Dockerfile
+    container_name: wol_api
+    ports:
+      - "5055:5055"
+    environment:
+      - MAIN_MAC_ADDRESS=00:1A:2B:3C:4D:5E
+      - SECRET_KEY=change_me
