@@ -4,10 +4,10 @@ name: Build Fable Scraper
 on:
   push:
     tags:
-      - 'mirmir-v*'
+      - 'mimir-v*'
 
 env: 
-  IMAGE: ghcr.io/${{ github.repository_owner }}/mirmir
+  IMAGE: ghcr.io/${{ github.repository_owner }}/mimir
 
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Get version from tags
         id: get_version
         run: |
-          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/mirmir-//')
+          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/mimir-//')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Set up QEMU
@@ -43,8 +43,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./mirmir
-          file: ./mirmir/Dockerfile
+          context: ./mimir
+          file: ./mimir/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
