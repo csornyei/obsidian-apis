@@ -1,8 +1,6 @@
-import os
-
 import httpx
 
-FILE_API_BASE_URL = os.getenv("FILE_API_BASE_URL", "http://localhost:8000")
+from env import FILE_API_BASE_URL
 
 
 def test_connection() -> bool:
