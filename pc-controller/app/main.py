@@ -7,8 +7,8 @@ from typing import Literal
 from fastapi import FastAPI, Response, responses
 import psutil
 
-from env import PC_CONTROL_API_KEY
-from logger import logger
+from app.env import PC_CONTROL_API_KEY
+from app.logger import logger
 
 
 app = FastAPI(title="PC Controller API")
@@ -67,14 +67,16 @@ def health():
 
 @app.post("/power/{action}")
 def power_action(action: Literal["shutdown", "reboot", "sleep"]):
+    logger.info(f"Received power action request: {action}")
     match action:
         case "shutdown":
-            subprocess.run(["sudo", "shutdown", "now"])
+            subprocess.run(["/usr/bin/systemctl", "poweroff", "--force"])
         case "reboot":
-            subprocess.run(["sudo", "reboot"])
+            subprocess.run(["/usr/bin/systemctl", "reboot", "--force"])
         case "sleep":
-            subprocess.run(["systemctl", "suspend"])
+            subprocess.run(["/usr/bin/systemctl", "suspend"])
         case _:
             return Response(status_code=400, content="Invalid action")
 
+    logger.info(f"Executing power action: {action}")
     return {"message": f"PC will {action} now."}

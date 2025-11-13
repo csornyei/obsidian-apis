@@ -1,0 +1,15 @@
+[Unit]
+Description=PC Control FastAPI
+After=network.target
+
+[Service]
+User=pccontrol
+Group=pccontrol
+WorkingDirectory=/opt/pccontroller
+Environment="PATH=/opt/pccontroller/.venv/bin"
+ExecStart=/opt/pccontroller/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 5005
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
