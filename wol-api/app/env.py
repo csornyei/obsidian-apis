@@ -1,10 +1,17 @@
 import os
+from typing import Optional
 
 
-def get_env_var(key: str, default_value: str, raise_if_missing: bool = False) -> str:
+def get_env_var(
+    key: str, default_value: Optional[str] = None, raise_if_missing: bool = False
+) -> Optional[str]:
     value = os.getenv(key, default_value)
     if value is None and raise_if_missing:
         raise EnvironmentError(f"Environment variable '{key}' is missing.")
+    if value is None and default_value is not None:
+        return EnvironmentError(
+            f"Environment variable '{key}' is missing. No default value provided."
+        )
     return value
 
 
