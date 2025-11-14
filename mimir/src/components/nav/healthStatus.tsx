@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { HealthResponse } from "@/utils/types";
+import { HealthResponse, isHealthyStatus } from "@/utils/types";
 import ControlButtons from "./controlButtons";
 
 interface HealthStatusProps {
@@ -28,56 +28,66 @@ const mbToGb = (mb: number): string => {
 };
 
 const HealthStatus: FC<HealthStatusProps> = ({ pcHealth }) => {
-  return (
-    <div className="absolute top-12 right-2 rounded bg-zinc-700 p-2 text-white">
-      <div className="mb-1 flex justify-between">
-        <span>Hostname:</span>
-        <span>{pcHealth.hostname}</span>
-      </div>
-      <div className="mb-1 flex justify-between">
-        <span>Uptime:</span>
-        <span>{parseUptime(pcHealth.uptime_seconds)}</span>
-      </div>
+  if (isHealthyStatus(pcHealth)) {
+    return (
+      <div className="absolute top-12 right-2 rounded bg-zinc-700 p-2 text-white">
+        <div className="mb-1 flex justify-between">
+          <span>Hostname:</span>
+          <span>{pcHealth.hostname}</span>
+        </div>
+        <div className="mb-1 flex justify-between">
+          <span>Uptime:</span>
+          <span>{parseUptime(pcHealth.uptime_seconds)}</span>
+        </div>
 
-      <p>Load Average:</p>
-      <table className="mb-1 w-full table-auto">
-        <thead>
-          <tr>
-            <th className="px-2 text-center">1 min</th>
-            <th className="px-2 text-center">5 min</th>
-            <th className="px-2 text-center">15 min</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="px-2 text-center">
-              {pcHealth.load_average["1min"].toFixed(2)}
-            </td>
-            <td className="px-2 text-center">
-              {pcHealth.load_average["5min"].toFixed(2)}
-            </td>
-            <td className="px-2 text-center">
-              {pcHealth.load_average["15min"].toFixed(2)}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <p>Load Average:</p>
+        <table className="mb-1 w-full table-auto">
+          <thead>
+            <tr>
+              <th className="px-2 text-center">1 min</th>
+              <th className="px-2 text-center">5 min</th>
+              <th className="px-2 text-center">15 min</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="px-2 text-center">
+                {pcHealth.load_average["1min"].toFixed(2)}
+              </td>
+              <td className="px-2 text-center">
+                {pcHealth.load_average["5min"].toFixed(2)}
+              </td>
+              <td className="px-2 text-center">
+                {pcHealth.load_average["15min"].toFixed(2)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div className="mb-1 flex justify-between">
-        <span>CPU Usage:</span>
-        <span>{pcHealth.cpu_usage_percent.toFixed(2)}%</span>
+        <div className="mb-1 flex justify-between">
+          <span>CPU Usage:</span>
+          <span>{pcHealth.cpu_usage_percent.toFixed(2)}%</span>
+        </div>
+        <div>
+          <p>Memory Usage:</p>
+          <p>
+            {pcHealth.memory.percent_used.toFixed(2)}% (
+            {mbToGb(pcHealth.memory.used_mb)}
+            GB / {mbToGb(pcHealth.memory.total_mb)}GB)
+          </p>
+        </div>
+        <ControlButtons />
       </div>
-      <div>
-        <p>Memory Usage:</p>
-        <p>
-          {pcHealth.memory.percent_used.toFixed(2)}% (
-          {mbToGb(pcHealth.memory.used_mb)}
-          GB / {mbToGb(pcHealth.memory.total_mb)}GB)
-        </p>
+    );
+  } else {
+    // This should never happen, but just in case
+    return (
+      <div className="absolute top-12 right-2 rounded bg-red-700 p-2 text-white">
+        <p>PC is Unhealthy</p>
+        <p>Error: {pcHealth.error}</p>
       </div>
-      <ControlButtons />
-    </div>
-  );
+    );
+  }
 };
 
 export default HealthStatus;

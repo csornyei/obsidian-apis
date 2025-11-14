@@ -22,6 +22,12 @@ type UnhealthyStatus = {
 
 export type HealthResponse = HealthyStatus | UnhealthyStatus;
 
+export const isHealthyStatus = (
+  status: HealthResponse,
+): status is HealthyStatus => {
+  return "status" in status === false;
+};
+
 export type PowerAction = "poweron" | "shutdown" | "reboot" | "sleep";
 
 export type Message = {
