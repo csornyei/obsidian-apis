@@ -13,6 +13,9 @@
       "path": "mimir"
     },
     {
+      "path": "mimir-orchestrator"
+    },
+    {
       "path": "pc-controller"
     },
     {

@@ -29,3 +29,30 @@ services:
     environment:
       - MAIN_MAC_ADDRESS=00:1A:2B:3C:4D:5E
       - SECRET_KEY=change_me
+
+  mimir-orchestrator:
+    build:
+      context: ./mimir-orchestrator
+      dockerfile: Dockerfile
+    container_name: mimir_orchestrator
+    ports:
+      - "8888:8888"
+    environment:
+      - DATABASE_URL=user:password@db:5432/mimir_db
+    depends_on:
+      - db 
+
+  db:
+    image: postgres:15
+    container_name: mimir_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mimir_db
+    volumes:
+      - mimir_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  mimir_db_data:
