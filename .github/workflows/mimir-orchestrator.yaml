@@ -6,7 +6,7 @@ on:
       - 'mo-v*'
 
 env: 
-  IMAGE: ghcr.io/${{ github.repository_owner }}/mimir-orchestrator
+  IMAGE: ghcr.io/${{ github.repository_owner }}/mimir_orchestrator
 
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
       - name: Get version from tags
         id: get_version
         run: |
-          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/mimir-orchestrator-//')
+          VERSION=$(echo "${GITHUB_REF}" | sed 's/refs\/tags\/mo-//')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Set up QEMU
