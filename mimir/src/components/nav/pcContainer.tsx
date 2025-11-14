@@ -1,14 +1,17 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import TrafficLight from "@/components/nav/trafficLight";
-import { getPcHealth, sendPowerCommand } from "@/utils/local";
+import { getPcHealth } from "@/utils/local";
 import { HealthResponse } from "@/utils/types";
 import HealthStatus from "./healthStatus";
 import { AxiosError } from "axios";
-import { Power } from "lucide-react";
+import PowerButton from "./powerButton";
 
 const PCContainer: FC = () => {
+  const cooldownRef = useRef<NodeJS.Timeout | null>(null);
+  const [isCoolingDown, setIsCoolingDown] = useState<boolean>(false);
+
   const [pcHealth, setPcHealth] = useState<HealthResponse | null>(null);
   const [showStatus, setShowStatus] = useState<boolean>(false);
 
@@ -19,6 +22,7 @@ const PCContainer: FC = () => {
         console.log("Initial PC Health:", response);
 
         setPcHealth(response);
+        setIsCoolingDown(false);
       } catch (error) {
         if (error instanceof AxiosError) {
           console.error("Axios error details:", {
@@ -43,7 +47,15 @@ const PCContainer: FC = () => {
   }, []);
 
   useEffect(() => {
+    if (pcHealth && cooldownRef.current) {
+      clearTimeout(cooldownRef.current);
+      cooldownRef.current = null;
+    }
+  }, [pcHealth]);
+
+  useEffect(() => {
     if (showStatus) {
+      // Auto-hide after 30 seconds
       const interval = setInterval(async () => {
         setShowStatus(false);
       }, 30000);
@@ -54,18 +66,21 @@ const PCContainer: FC = () => {
     }
   }, [showStatus]);
 
+  const getStatusColor = () => {
+    if (isCoolingDown) return "yellow";
+    if (pcHealth) return "green";
+    return "red";
+  };
+
   return (
-    <div className="flex flex-row gap-2 items-center">
-      {!pcHealth && (
-        <Power
-          className="text-green-700 bg-green-100 p-1 rounded-full w-8 h-8 cursor-pointer active:bg-green-900 active:text-green-200"
-          onClick={async () => {
-            const response = await sendPowerCommand("poweron");
-            console.log("Power on response:", response);
-          }} />
-      )}
+    <div className="flex flex-row items-center gap-2">
+      <PowerButton
+        cooldownRef={cooldownRef}
+        isCoolingDown={isCoolingDown}
+        setIsCoolingDown={setIsCoolingDown}
+      />
       <TrafficLight
-        status={pcHealth ? "green" : "red"}
+        status={getStatusColor()}
         onClick={() => {
           setShowStatus(!showStatus);
         }}

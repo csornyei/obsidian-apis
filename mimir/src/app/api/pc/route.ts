@@ -39,7 +39,9 @@ export async function POST(req: Request) {
     case "poweron":
       const powerOnResponse = await postPowerAction(action);
 
-      return new Response(JSON.stringify(powerOnResponse), { status: 200 });
+      return new Response(JSON.stringify(powerOnResponse), {
+        status: 200,
+      });
     default:
       return new Response("Invalid action", { status: 400 });
   }

@@ -29,18 +29,18 @@ const mbToGb = (mb: number): string => {
 
 const HealthStatus: FC<HealthStatusProps> = ({ pcHealth }) => {
   return (
-    <div className="absolute top-12 right-2 bg-zinc-700 text-white p-2 rounded">
-      <div className="flex justify-between mb-1">
+    <div className="absolute top-12 right-2 rounded bg-zinc-700 p-2 text-white">
+      <div className="mb-1 flex justify-between">
         <span>Hostname:</span>
         <span>{pcHealth.hostname}</span>
       </div>
-      <div className="flex justify-between mb-1">
+      <div className="mb-1 flex justify-between">
         <span>Uptime:</span>
         <span>{parseUptime(pcHealth.uptime_seconds)}</span>
       </div>
 
       <p>Load Average:</p>
-      <table className="table-auto mb-1 w-full">
+      <table className="mb-1 w-full table-auto">
         <thead>
           <tr>
             <th className="px-2 text-center">1 min</th>
@@ -63,7 +63,7 @@ const HealthStatus: FC<HealthStatusProps> = ({ pcHealth }) => {
         </tbody>
       </table>
 
-      <div className="flex justify-between mb-1">
+      <div className="mb-1 flex justify-between">
         <span>CPU Usage:</span>
         <span>{pcHealth.cpu_usage_percent.toFixed(2)}%</span>
       </div>
