@@ -23,3 +23,8 @@ type UnhealthyStatus = {
 export type HealthResponse = HealthyStatus | UnhealthyStatus;
 
 export type PowerAction = "poweron" | "shutdown" | "reboot" | "sleep";
+
+export type Message = {
+  author: "user" | "system";
+  content: string;
+};

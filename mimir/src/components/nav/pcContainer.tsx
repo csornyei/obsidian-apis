@@ -19,7 +19,6 @@ const PCContainer: FC = () => {
     const getHealth = async () => {
       try {
         const response = await getPcHealth();
-        console.log("Initial PC Health:", response);
 
         setPcHealth(response);
         setIsCoolingDown(false);
@@ -74,11 +73,13 @@ const PCContainer: FC = () => {
 
   return (
     <div className="flex flex-row items-center gap-2">
-      <PowerButton
-        cooldownRef={cooldownRef}
-        isCoolingDown={isCoolingDown}
-        setIsCoolingDown={setIsCoolingDown}
-      />
+      {!!pcHealth ? null : (
+        <PowerButton
+          cooldownRef={cooldownRef}
+          isCoolingDown={isCoolingDown}
+          setIsCoolingDown={setIsCoolingDown}
+        />
+      )}
       <TrafficLight
         status={getStatusColor()}
         onClick={() => {
