@@ -1,4 +1,4 @@
-export interface HealthResponse {
+type HealthyStatus = {
   hostname: string;
   uptime_seconds: number;
   load_average: {
@@ -13,6 +13,13 @@ export interface HealthResponse {
     used_mb: number;
     percent_used: number;
   };
-}
+};
+
+type UnhealthyStatus = {
+  status: "unhealthy";
+  error: string;
+};
+
+export type HealthResponse = HealthyStatus | UnhealthyStatus;
 
 export type PowerAction = "poweron" | "shutdown" | "reboot" | "sleep";

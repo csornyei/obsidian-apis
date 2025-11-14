@@ -14,6 +14,7 @@ const wolApi = axios.create({
 export const getHealth: () => Promise<HealthResponse | null> = async () => {
   try {
     const response = await wolApi.get("/health");
+
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -32,10 +33,6 @@ export const getHealth: () => Promise<HealthResponse | null> = async () => {
 };
 
 export const postPowerAction = async (action: PowerAction) => {
-  if (action === "poweron") {
-    throw new Error("Power on action is not supported via this method");
-  }
-
   console.log(`Sending power action: ${action}`);
   try {
     const response = await wolApi.post(`/power/${action}`, {
