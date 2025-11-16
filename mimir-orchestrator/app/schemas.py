@@ -12,6 +12,10 @@ class MessageStub(BaseModel):
     content: str
 
 
+class MessageEnhancerInputSchema(MessageStub):
+    id: UUID
+
+
 class MessageCreateSchema(MessageStub):
     conversation_id: Optional[UUID] = None
 
