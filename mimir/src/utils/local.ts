@@ -20,23 +20,26 @@ export const sendPowerCommand = async (action: PowerAction) => {
 };
 
 export const getChatMessages = async (chatId: string) => {
-  const response = await localAxios.get(`/chat/${chatId}`);
-  return response.data;
+  const response = await fetch(`/mimir/api/chat/${chatId}`, {
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    throw new Error(`Error fetching chat messages: ${response.statusText}`);
+  }
+  return response.json();
 };
 
 export const listChats = async () => {
-  const response = await localAxios.get("/chat");
-  return response.data;
+  const response = await fetch("/mimir/api/chat", {
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    throw new Error(`Error fetching chat list: ${response.statusText}`);
+  }
+  return response.json();
 };
 
 export const sendChatMessage = async (message: Message): Promise<Message> => {
-  const response = await localAxios.post(`/chat`, {
-    message,
-  });
-
-  if (!response.data) {
-    throw new Error("No response data received from sendChatMessage");
-  }
-
+  const response = await localAxios.post("/chat", message);
   return response.data;
 };
