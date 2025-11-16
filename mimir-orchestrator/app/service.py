@@ -85,7 +85,9 @@ async def create_message(db: AsyncSession, message: MessageCreateSchema):
 
 
 async def list_conversations(db: AsyncSession):
-    result = await db.execute(select(ConversationModel))
+    result = await db.execute(
+        select(ConversationModel).order_by(ConversationModel.created_at.desc())
+    )
 
     conversations = result.scalars().all()
 
@@ -100,6 +102,7 @@ async def list_messages(
     messages = (
         select(MessageModel)
         .where(MessageModel.conversation_id == conversation.id)
+        .order_by(MessageModel.created_at.asc())
         .limit(limit)
         .offset(offset)
     )
