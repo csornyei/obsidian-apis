@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HealthResponse, PowerAction } from "@/utils/types";
+import { HealthResponse, Message, PowerAction } from "@/utils/types";
 
 const localAxios = axios.create({
   baseURL: "/mimir/api/",
@@ -14,11 +14,8 @@ export const getPcHealth: () => Promise<HealthResponse> = async () => {
 };
 
 export const sendPowerCommand = async (action: PowerAction) => {
-  console.log(`Sending power command: ${action} to /mimir/api/pc`);
-
   const response = await localAxios.post("/pc", { action });
 
-  console.log(`Power command response:`, response.data);
   return response.data;
 };
 
@@ -32,17 +29,14 @@ export const listChats = async () => {
   return response.data;
 };
 
-export const sendChatMessage = async (
-  conversation_id: string | null,
-  message: string,
-) => {
-  console.log(`Sending message to chat ${conversation_id}: ${message}`);
-
+export const sendChatMessage = async (message: Message): Promise<Message> => {
   const response = await localAxios.post(`/chat`, {
     message,
-    conversation_id: conversation_id,
   });
 
-  console.log(`Chat message response:`, response.data);
+  if (!response.data) {
+    throw new Error("No response data received from sendChatMessage");
+  }
+
   return response.data;
 };

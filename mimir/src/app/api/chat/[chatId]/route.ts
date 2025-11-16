@@ -10,7 +10,6 @@ export async function GET(
   const chatHistory = await getChatHistory(chatId);
 
   if (chatHistory) {
-    console.log("Chat history response received:", chatHistory);
     return new Response(JSON.stringify(chatHistory), { status: 200 });
   }
   console.error("No chat history response received");

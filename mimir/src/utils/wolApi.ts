@@ -33,7 +33,6 @@ export const getHealth: () => Promise<HealthResponse | null> = async () => {
 };
 
 export const postPowerAction = async (action: PowerAction) => {
-  console.log(`Sending power action: ${action}`);
   try {
     const response = await wolApi.post(`/power/${action}`, {
       secret_key: secretKey,

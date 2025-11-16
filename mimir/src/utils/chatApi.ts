@@ -14,23 +14,40 @@ const chatApi = axios.create({
 });
 
 export const sendMessage = async (
-  conversation_id: string | null,
   message: Message,
 ): Promise<Message | null> => {
-  console.log(`Sending message: ${message}`);
+  console.log(`Chat API: Sending message: ${message}`);
   try {
-    const response = await chatApi.post("/chat", {
-      conversation_id,
-      message,
-    });
+    const payload = {
+      role: message.role,
+      content: message.content,
+      conversation_id: message.conversation_id,
+    };
+    console.log(`Chat API: Payload: ${JSON.stringify(payload)}`);
+    const response = await chatApi.post("/chat", payload);
 
-    return response.data;
+    console.log(`Chat API: Response data: ${JSON.stringify(response.data)}`);
+
+    const rspData = response.data;
+
+    if (!rspData || !rspData.response) {
+      console.error("Invalid response data:", rspData);
+      return null;
+    }
+
+    const responseMessage: Message = {
+      conversation_id: rspData.conversation_id,
+      role: rspData.response.role,
+      content: rspData.response.content,
+    };
+
+    return responseMessage;
   } catch (error) {
     if (error instanceof AxiosError) {
       console.error("Axios error details:", {
         message: error.message,
         code: error.code,
-        responseData: error.response?.data,
+        responseData: JSON.stringify(error.response?.data),
       });
     } else {
       console.error("Unexpected error:", error);

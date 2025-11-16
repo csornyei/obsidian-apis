@@ -23,7 +23,13 @@ export default function ChatContainer({
 
     setMessages((prev) => [...prev, { role: "user", content: msg }]);
 
-    await sendChatMessage(conversationId, msg);
+    const response = await sendChatMessage({
+      role: "user",
+      content: msg,
+      conversation_id: conversationId || undefined,
+    });
+
+    setMessages((prev) => [...prev, response]);
   };
 
   return (

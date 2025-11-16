@@ -32,8 +32,7 @@ export default function PowerButton({
             setIsCoolingDown(false);
           }, 5000); // 5 seconds cooldown
 
-          const response = await sendPowerCommand("poweron");
-          console.log("Power on response:", response);
+          await sendPowerCommand("poweron");
         } catch (error) {
           console.error("Error sending power command:", error);
           if (cooldownRef.current) {

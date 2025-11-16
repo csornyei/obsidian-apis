@@ -5,8 +5,6 @@ export async function GET() {
   const healthResponse = await getHealth();
 
   if (!!healthResponse) {
-    console.log("Health response received:", healthResponse);
-
     if ("status" in healthResponse && healthResponse.status === "unhealthy") {
       console.error("Unhealthy status received:", healthResponse.error);
 
