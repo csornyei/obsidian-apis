@@ -34,7 +34,10 @@ class OllamaLlama3Client:
             "messages": [message.model_dump()],
             "stream": False,
         }
-        logger.debug(f"Sending chat request to LLM with payload: {payload}")
+        logger.debug(
+            f"Sending chat request to LLM with payload: {payload}",
+            extra={"payload": payload, "url": self.base_url},
+        )
 
         async with httpx.AsyncClient(base_url=self.base_url, timeout=120.0) as client:
             resp = await client.post("/api/chat", json=payload)

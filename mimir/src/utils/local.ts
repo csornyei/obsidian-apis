@@ -33,12 +33,15 @@ export const listChats = async () => {
 };
 
 export const sendChatMessage = async (
-  chatId: string | null,
+  conversation_id: string | null,
   message: string,
 ) => {
-  console.log(`Sending message to chat ${chatId}: ${message}`);
+  console.log(`Sending message to chat ${conversation_id}: ${message}`);
 
-  const response = await localAxios.post(`/chat`, { message, chatId });
+  const response = await localAxios.post(`/chat`, {
+    message,
+    conversation_id: conversation_id,
+  });
 
   console.log(`Chat message response:`, response.data);
   return response.data;

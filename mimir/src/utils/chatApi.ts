@@ -1,25 +1,26 @@
 import axios, { AxiosError } from "axios";
-import { Message } from "@/utils/types";
+import { Conversation, Message } from "@/utils/types";
 
 const url = process.env.CHAT_API_URL || "http://localhost:5000";
-const apiKey = process.env.CHAT_API_KEY;
+// TODO: add to mimir-orchestator
+// const apiKey = process.env.CHAT_API_KEY;
 
 const chatApi = axios.create({
   baseURL: url,
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+    // Authorization: `Bearer ${apiKey}`,
   },
 });
 
 export const sendMessage = async (
-  chatId: string,
+  conversation_id: string | null,
   message: Message,
 ): Promise<Message | null> => {
   console.log(`Sending message: ${message}`);
   try {
-    const response = await chatApi.post("/message", {
-      chatId,
+    const response = await chatApi.post("/chat", {
+      conversation_id,
       message,
     });
 
@@ -38,13 +39,17 @@ export const sendMessage = async (
   }
 };
 
-export const getChatHistory = async (
-  chatId: string,
-): Promise<Message[] | null> => {
+export const getChatHistory = async (chatId: string): Promise<Message[]> => {
   try {
-    const response = await chatApi.get(`/history/${chatId}`);
+    const response = await chatApi.get<Message[]>(`/conversations/${chatId}`);
 
-    return response.data;
+    const data = response.data;
+
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    return data;
   } catch (error) {
     if (error instanceof AxiosError) {
       console.error("Axios error details:", {
@@ -55,13 +60,13 @@ export const getChatHistory = async (
     } else {
       console.error("Unexpected error:", error);
     }
-    return null;
+    return [];
   }
 };
 
-export const getChatList = async (): Promise<string[] | null> => {
+export const getConversationList = async (): Promise<Conversation[]> => {
   try {
-    const response = await chatApi.get("/chats");
+    const response = await chatApi.get<Conversation[]>("/conversations");
 
     return response.data;
   } catch (error) {
@@ -74,6 +79,6 @@ export const getChatList = async (): Promise<string[] | null> => {
     } else {
       console.error("Unexpected error:", error);
     }
-    return null;
+    return [];
   }
 };

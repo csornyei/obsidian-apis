@@ -1,31 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import InputsContainer from "@/components/chat/inputs/container";
 import MessagesContainer from "@/components/chat/messages/container";
 
 import { Message } from "@/utils/types";
-import { getChatMessages, sendChatMessage } from "@/utils/local";
+import { sendChatMessage } from "@/utils/local";
 
-export default function ChatContainer() {
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatContainerProps {
+  conversationId?: string | null;
+  chatHistory?: Message[];
+}
 
-  useEffect(() => {
-    (async () => {
-      const messageHistory = await getChatMessages("defaultChatId");
-
-      console.log("Fetched message history:", messageHistory);
-
-      setMessages(messageHistory);
-    })();
-  }, []);
+export default function ChatContainer({
+  conversationId = null,
+  chatHistory = [],
+}: ChatContainerProps) {
+  const [messages, setMessages] = useState<Message[]>(chatHistory);
 
   const sendMessage = async (msg: string) => {
     console.log("Sending message:", msg);
 
-    setMessages((prev) => [...prev, { author: "user", content: msg }]);
+    setMessages((prev) => [...prev, { role: "user", content: msg }]);
 
-    await sendChatMessage("defaultChatId", msg);
+    await sendChatMessage(conversationId, msg);
   };
 
   return (

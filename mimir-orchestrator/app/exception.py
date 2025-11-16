@@ -1,4 +1,5 @@
 import json
+from app.schemas import ExceptionResponseSchema
 
 
 class BaseAppException(Exception):
@@ -7,11 +8,10 @@ class BaseAppException(Exception):
         self.message = message
         self.status_code = status_code
 
-    def to_response(self):
-        return {
-            "status_code": self.status_code,
-            "message": json.dumps({"error": self.message}),
-        }
+    def to_response(self) -> ExceptionResponseSchema:
+        return ExceptionResponseSchema(
+            message=json.dumps({"error": self.message}),
+        )
 
 
 class NotFoundException(BaseAppException):

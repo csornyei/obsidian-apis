@@ -1,6 +1,10 @@
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional, Literal, Union
 from uuid import UUID
+
+
+class ExceptionResponseSchema(BaseModel):
+    message: str
 
 
 class MessageStub(BaseModel):
@@ -12,6 +16,11 @@ class MessageCreateSchema(MessageStub):
     conversation_id: Optional[UUID] = None
 
 
-class ChatResponseSchema(BaseModel):
+class ChatSuccessResponseSchema(BaseModel):
     conversation_id: UUID
     response: MessageStub
+
+
+class ChatResponseSchema(BaseModel):
+    status_code: int
+    response: Union[ChatSuccessResponseSchema, ExceptionResponseSchema]

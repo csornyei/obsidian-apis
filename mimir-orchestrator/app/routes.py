@@ -6,14 +6,22 @@ import app.service as service
 import app.enhancer as enhancer
 from app.logger import logger
 from app.llm import get_llm_client, LLMClient
-from app.schemas import MessageCreateSchema, ChatResponseSchema
+from app.schemas import (
+    MessageCreateSchema,
+    ChatResponseSchema,
+    ChatSuccessResponseSchema,
+    ExceptionResponseSchema,
+)
 from app.exception import BaseAppException
 
 router = APIRouter()
 
 
 @router.post(
-    "/chat", tags=["chat"], name="Send message", response_model=ChatResponseSchema
+    "/chat",
+    tags=["chat"],
+    name="Send message",
+    response_model=ChatResponseSchema,
 )
 async def send_message(
     message: MessageCreateSchema,
@@ -21,8 +29,6 @@ async def send_message(
     llm_client: LLMClient = Depends(get_llm_client),
 ):
     try:
-        print(f"Received message: {message.content} with role: {message.role}")
-
         msg = await service.create_message(db, message)
 
         logger.info(f"Created message: {msg.model_dump()}")
@@ -47,19 +53,24 @@ async def send_message(
         logger.info(f"LLM response: {assistant_msg.content}")
 
         return ChatResponseSchema(
-            conversation_id=msg.conversation_id,
-            response=MessageCreateSchema(
-                role=assistant_msg.role, content=assistant_msg.content
+            status_code=200,
+            response=ChatSuccessResponseSchema(
+                conversation_id=msg.conversation_id,
+                response=MessageCreateSchema(
+                    role=assistant_msg.role, content=assistant_msg.content
+                ),
             ),
         )
 
     except BaseAppException as e:
-        return e.to_response()
+        return ChatResponseSchema(status_code=e.status_code, response=e.to_response())
     except Exception as e:
-        return {
-            "status_code": 500,
-            "message": f"An unexpected error occurred: {str(e)}",
-        }
+        return ChatResponseSchema(
+            status_code=500,
+            response=ExceptionResponseSchema(
+                message=f"An unexpected error occurred: {str(e)}",
+            ),
+        )
 
 
 @router.get("/conversations", tags=["conversations"], name="List conversations")

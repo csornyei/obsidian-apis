@@ -30,7 +30,19 @@ export const isHealthyStatus = (
 
 export type PowerAction = "poweron" | "shutdown" | "reboot" | "sleep";
 
+export type Role = "user" | "system" | "assistant";
+
 export type Message = {
-  author: "user" | "system";
+  conversation_id?: string;
   content: string;
+  role: Role;
+  created_at?: string;
+  id?: string;
+};
+
+export type Conversation = {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
 };

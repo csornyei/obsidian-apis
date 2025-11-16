@@ -7,22 +7,6 @@ export async function GET(
 ) {
   const { chatId } = await ctx.params;
 
-  if (chatId === "defaultChatId") {
-    return new Response(
-      JSON.stringify([
-        {
-          author: "system",
-          content: "Welcome to Mimir! How can I assist you today?",
-        },
-        {
-          author: "user",
-          content: "Hello, Mimir!",
-        },
-      ]),
-      { status: 200 },
-    );
-  }
-
   const chatHistory = await getChatHistory(chatId);
 
   if (chatHistory) {

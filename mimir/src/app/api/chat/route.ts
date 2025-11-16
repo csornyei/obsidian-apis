@@ -1,8 +1,8 @@
-import { getChatList, sendMessage } from "@/utils/chatApi";
+import { getConversationList, sendMessage } from "@/utils/chatApi";
 import { Message } from "@/utils/types";
 
 export async function GET() {
-  const chatListResponse = await getChatList();
+  const chatListResponse = await getConversationList();
 
   if (!!chatListResponse) {
     console.log("Chat list response received:", chatListResponse);
@@ -13,7 +13,7 @@ export async function GET() {
 }
 
 type PostBody = {
-  chatId: string;
+  conversation_id: string | null;
   message: Message;
 };
 
@@ -21,11 +21,13 @@ export async function POST(req: Request) {
   try {
     const body: PostBody = await req.json();
 
-    const { message, chatId } = body;
+    const { message, conversation_id } = body;
 
-    console.log(`POST: chatId=${chatId}, message=${JSON.stringify(message)}`);
+    console.log(
+      `POST: conversation_id=${conversation_id}, message=${JSON.stringify(message)}`,
+    );
 
-    const response = await sendMessage(chatId, message);
+    const response = await sendMessage(conversation_id, message);
 
     return new Response(JSON.stringify(response), { status: 200 });
   } catch (error) {
