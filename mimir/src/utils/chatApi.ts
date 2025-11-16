@@ -83,9 +83,26 @@ export const getChatHistory = async (chatId: string): Promise<Message[]> => {
 
 export const getConversationList = async (): Promise<Conversation[]> => {
   try {
-    const response = await chatApi.get<Conversation[]>("/conversations");
+    const response = await fetch(`${url}/conversations`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    return response.data;
+    console.log(
+      `Chat API: getConversationList response status: ${response.status}`,
+    );
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    console.log(`Chat API: getConversationList data: ${JSON.stringify(data)}`);
+
+    return data;
   } catch (error) {
     if (error instanceof AxiosError) {
       console.error("Axios error details:", {

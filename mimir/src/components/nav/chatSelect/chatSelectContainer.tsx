@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { getConversationList } from "@/utils/chatApi";
+import ChatSelect from "./chatSelect";
 
 async function getPreviousConversations() {
   try {
@@ -24,13 +24,7 @@ export default async function ChatSelectContainer() {
       {chatList.length === 0 ? (
         <p>No chats available.</p>
       ) : (
-        <ul>
-          {chatList.map((conversation) => (
-            <li key={conversation.id}>
-              <Link href={`/${conversation.id}`}>{conversation.title}</Link>
-            </li>
-          ))}
-        </ul>
+        <ChatSelect chats={chatList} />
       )}
     </div>
   );
